@@ -21,8 +21,8 @@ resource "digitalocean_vpc" "vpc_blog" {
 
 # Load balancer
 resource "digitalocean_loadbalancer" "public-lb" {
-  name   = "loadbalancer"
-  region = var.region
+  name     = "loadbalancer"
+  region   = var.region
   vpc_uuid = digitalocean_vpc.vpc_blog.id
 
   forwarding_rule {
