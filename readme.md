@@ -1,6 +1,6 @@
 # Infrastructure of the blog project
 
-This infrastructure is related to the other two project that I develop or I'm developing. You can found theses project in my repository.
+This infrastructure is related to the other two project that I develop or I'm developing. You can found theses project in my repository. This infrastructure code is for Digital ocean platform.
 
 ## Environment variables
 
