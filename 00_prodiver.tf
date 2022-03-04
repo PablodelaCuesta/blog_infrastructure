@@ -26,7 +26,7 @@ provider "digitalocean" {
 
 ## SSH Connection to remote machines
 
-resource "digitalocean_ssh_key" "default" {
-  name       = "Key from terraform"
+resource "digitalocean_ssh_key" "ssh" {
+  name       = "terraform"
   public_key = file(var.public_key_path)
 }

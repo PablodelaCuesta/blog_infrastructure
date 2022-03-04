@@ -8,12 +8,12 @@ variable "region" {
 }
 
 variable "ip_range" {
-  default = "10.2.1.0/16"
+  default = "10.3.1.0/16"
   type    = string
 }
 
 resource "digitalocean_vpc" "vpc_blog" {
-  name     = "blog-network"
+  name     = "blog-docker-network"
   region   = var.region
   ip_range = var.ip_range
 }
