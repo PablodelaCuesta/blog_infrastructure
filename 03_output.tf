@@ -1,8 +1,3 @@
 output "droplet-public-ip" {
-  value = digitalocean_droplet.blog-public
+  value = digitalocean_droplet.blog.ipv4_address
 }
-
-output "droplet-private-ip" {
-  value = digitalocean_droplet.blog-private
-}
-

@@ -19,39 +19,13 @@ resource "digitalocean_vpc" "vpc_blog" {
 }
 
 
-# Load balancer
-resource "digitalocean_loadbalancer" "public-lb" {
-  name     = "loadbalancer"
-  region   = var.region
-  vpc_uuid = digitalocean_vpc.vpc_blog.id
-
-  forwarding_rule {
-    entry_port     = 80
-    entry_protocol = "http"
-
-    target_port     = 80
-    target_protocol = "http"
-  }
-
-  healthcheck {
-    port     = 22
-    protocol = "tcp"
-  }
-
-  droplet_ids = [
-    digitalocean_droplet.blog-public.id
-  ]
-}
-
 # Firewall
 
 resource "digitalocean_firewall" "ssh-icmp-and-outbound" {
   name = "allow-ssh-and-icmp"
 
   droplet_ids = [
-    digitalocean_droplet.blog-public.id,
-    digitalocean_droplet.blog-private.id,
-    digitalocean_droplet.blog-database.id,
+    digitalocean_droplet.blog.id,
   ]
 
   inbound_rule {
@@ -84,56 +58,22 @@ resource "digitalocean_firewall" "ssh-icmp-and-outbound" {
 }
 
 
-resource "digitalocean_firewall" "fw-public" {
+resource "digitalocean_firewall" "fw" {
   name = "allow-http-https-public"
 
   droplet_ids = [
-    digitalocean_droplet.blog-public.id
+    digitalocean_droplet.blog.id
   ]
 
   inbound_rule {
     protocol                  = "tcp"
-    port_range                = "80"
-    source_load_balancer_uids = [digitalocean_loadbalancer.public-lb.id]
+    port_range                = "80"    
+    source_addresses = [ "0.0.0.0/0", "::/0" ]
   }
 
   inbound_rule {
     protocol                  = "tcp"
     port_range                = "443"
-    source_load_balancer_uids = [digitalocean_loadbalancer.public-lb.id]
-  }
-}
-
-resource "digitalocean_firewall" "fw-private" {
-  name = "allow-http-https-private"
-
-  droplet_ids = [
-    digitalocean_droplet.blog-private.id
-  ]
-
-  inbound_rule {
-    protocol           = "tcp"
-    port_range         = "80"
-    source_droplet_ids = [digitalocean_droplet.blog-public.id]
-  }
-
-  inbound_rule {
-    protocol           = "tcp"
-    port_range         = "443"
-    source_droplet_ids = [digitalocean_droplet.blog-public.id]
-  }
-}
-
-resource "digitalocean_firewall" "fw-database" {
-  name = "allow-mysql-traffic-form-backend"
-
-  droplet_ids = [digitalocean_droplet.blog-database.id]
-
-  inbound_rule {
-    protocol   = "tcp"
-    port_range = "3306"
-    source_droplet_ids = [
-      digitalocean_droplet.blog-private.id
-    ]
+    source_addresses = [ "0.0.0.0/0", "::/0" ]
   }
 }
