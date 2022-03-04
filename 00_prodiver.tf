@@ -9,6 +9,14 @@ terraform {
 }
 
 variable "digital_ocean_token" {}
+variable "private_key_path" {
+  type        = string
+  description = "Path to the private key used for this platform"
+}
+variable "public_key_path" {
+  type        = string
+  description = "Path to the public key used for this platform"
+}
 
 provider "digitalocean" {
   # Configuration options
@@ -20,5 +28,5 @@ provider "digitalocean" {
 
 resource "digitalocean_ssh_key" "default" {
   name       = "Key from terraform"
-  public_key = file("~/.ssh/do/blog.pub")
+  public_key = file(var.public_key_path)
 }
