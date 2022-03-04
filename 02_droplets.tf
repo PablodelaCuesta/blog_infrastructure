@@ -14,7 +14,9 @@ resource "digitalocean_droplet" "blog" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo 'Connected to ${self.name}'"
+      "echo 'Connected to ${self.name}'",
+      "sudo apt update",
+      "echo Done!"
     ]
 
     connection {
@@ -22,11 +24,10 @@ resource "digitalocean_droplet" "blog" {
       type        = "ssh"
       user        = "root"
       private_key = file(var.private_key_path)
-      agent = true
     }
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i '${self.ipv4_address}' --private-key ${var.private_key_path} playbooks/client.yaml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u root -i '${self.ipv4_address},' --private-key ${var.private_key_path} playbooks/client.yaml"
   }
 }
