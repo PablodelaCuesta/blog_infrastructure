@@ -11,6 +11,24 @@ resource "digitalocean_droplet" "blog-public" {
 
   backups    = true
   monitoring = true
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo Connected to ${self.name}"
+    ]
+
+    connection {
+      host        = self.ipv4_address
+      type        = "ssh"
+      user        = "root"
+      private_key = file(var.private_key_path)
+      agent = true
+    }
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i '${self.ipv4_address}' --private-key ${var.private_key_path} playbooks/client.yaml"
+  }
 }
 
 resource "digitalocean_droplet" "blog-private" {
