@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-client
+  namespace: blog
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: blog-client
+  template:
+    metadata:
+      labels:
+        app: blog-client
+    spec:
+      containers:
+      - name: blog-client
+        image: pcuesta90/blog_client:latest
+        imagePullPolicy: "Always"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-backend
+  namespace: blog
+  labels:
+    app: backend
+spec:
+  selector:
+    matchLabels:
+      app: blog-backend
+  template:
+    metadata:
+      labels:
+        app: blog-backend
+    spec:
+      containers:
+      - name: blog-backend
+        image: pcuesta90/blog_backend:latest
+        imagePullPolicy: "Always"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+
